@@ -1,11 +1,8 @@
-from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
-from SQLAlchemy import Column, String, Text, DateTime, Integer, Float, CheckConstraint, Boolean
+from SQLAlchemy import Column, String, Text, DateTime, Integer, Boolean
 
-db: SQLAlchemy = None
-def init_db(database: SQLAlchemy = None):
-  global db 
-  db = database
+from app import db
 
 class Post(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -18,3 +15,5 @@ class Post(db.Model):
   adopted = Column(Boolean, nullable=False, default=False)
 
 
+  def __repr__(self) -> str:
+    return f'Post({self.name}, {self.id}, ${self.adopted})'
