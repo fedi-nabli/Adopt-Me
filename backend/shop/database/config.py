@@ -63,6 +63,7 @@ class PostgresApi():
   
   def create_models(self) -> None:
     from models.store_model import StoreItem
+    from models.order_model import Order
 
     with self.app.app_context():
       self.db.create_all()

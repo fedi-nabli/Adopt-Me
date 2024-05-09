@@ -1,9 +1,12 @@
 from datetime import datetime
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, Float, String, Text, DateTime, CheckConstraint
 
 from app import db
 
-class StoreItem(db.Model):
+BASE = declarative_base()
+
+class StoreItem(BASE, db.Model):
   id = Column(Integer, primary_key=True)
   item_type = Column(String(8), nullable=False)
   name = Column(String(40), nullable=False)
