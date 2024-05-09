@@ -5,7 +5,12 @@ import colors from 'colors'
 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 
+import connectDB from './config/mongob.js'
+import { connectRedis } from './config/redisdb.js'
+
 dotenv.config()
+connectDB()
+connectRedis()
 
 const app = express()
 app.use(express.json())
