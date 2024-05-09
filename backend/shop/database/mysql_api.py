@@ -52,7 +52,7 @@ class DatabaseApi():
     connection.close()
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
-    app.config['SQLALCHEMY_TRACK_NOTIFICATION'] = False
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     self.db = SQLAlchemy(app)
 
   def get_db(self) -> SQLAlchemy:
