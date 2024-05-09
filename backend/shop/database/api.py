@@ -18,6 +18,8 @@ DB_NAME = os.environ.get('DB_NAME')
 
 class DatabaseApi():
   def __init__(self, delete_if_exists: bool = False, app: Flask = None) -> None:
+    self.app = app
+
     connection = connector.connect(
       host=DB_HOST,
       port=DB_PORT,
@@ -25,7 +27,6 @@ class DatabaseApi():
       password=DB_PASS
     )
 
-    print('Connection established successfully')
     cursor = connection.cursor()
 
     cursor.execute("SHOW DATABASES")
@@ -37,8 +38,8 @@ class DatabaseApi():
       if db_string == DB_NAME.lower():
         found = True
 
-    if DB_NAME is None:
-      if found == False and not delete_if_exists:
+    if DB_NAME is not None:
+      if found == False:
         create_db_query = f"CREATE DATABASE {DB_NAME}"
         cursor.execute(create_db_query)
       elif found:
@@ -50,9 +51,15 @@ class DatabaseApi():
     
     connection.close()
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASS}@${DB_HOST}/${DB_NAME}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_NOTIFICATION'] = False
     self.db = SQLAlchemy(app)
 
   def get_db(self) -> SQLAlchemy:
     return self.db
+  
+  def create_models(self):
+    from models.store_model import StoreItem
+
+    with self.app.app_context():
+      self.db.create_all()
