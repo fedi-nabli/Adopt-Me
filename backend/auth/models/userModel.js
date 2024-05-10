@@ -44,6 +44,10 @@ const userSchema = mongoose.Schema({
     required: true,
     minLength: 6
   },
+  image: {
+    type: String,
+    required: true
+  },
   age: {
     type: Number,
     required: true,
