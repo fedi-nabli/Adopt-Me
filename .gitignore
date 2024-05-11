@@ -35,3 +35,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-lock.yaml*
+
+# models unzipped data
+/models/animal_classification/pets
+/models/animal_classification/pets.*
+*.zip
