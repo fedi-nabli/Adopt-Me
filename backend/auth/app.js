@@ -8,6 +8,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 import connectDB from './config/mongob.js'
 import { connectRedis } from './config/redisdb.js'
 
+import userRoutes from './routes/userRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
 
 dotenv.config()
@@ -17,6 +18,7 @@ connectRedis()
 const app = express()
 app.use(express.json())
 
+app.use('/api/users', userRoutes)
 app.use('/api/upload', uploadRoutes)
 
 const __dirname = path.resolve()
