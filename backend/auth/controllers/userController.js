@@ -13,6 +13,7 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({email})
   
   if (user && (await user.matchPassword(password))) {
+    res.status(200)
     res.json({
       _id: user._id,
       name: user.name,
@@ -113,7 +114,53 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id)
 
   if (user) {
-    
+    res.status(200)
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      image: user.image,
+      age: user.age,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
+      isAdmin: user.isAdmin
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+const updateUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id)
+  
+  if (user) {
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+    user.image = req.body.image || user.image
+    user.age = req.body.age || user.age
+    user.phoneNumber = req.body.phoneNumber || user.phoneNumber
+    user.address = req.body.address || user.address
+
+    if (req.body.password) {
+      user.password = req.body.password
+    }
+
+    const updatedUser = await user.save()
+
+    res.status(200)
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      image: updatedUser.image,
+      age: updatedUser.age,
+      phoneNumber: updatedUser.phoneNumber,
+      address: updatedUser.address,
+      isAdmin: updatedUser.isAdmin,
+      token: generateToken(updatedUser._id),
+      refresh_token: generateRefreshToken(updatedUser._id)
+    })
   } else {
     res.status(404)
     throw new Error('User not found')
@@ -124,5 +171,7 @@ export {
   authUser,
   registerUser,
   logoutUser,
-  getAccessToken
+  getAccessToken,
+  getUserProfile,
+  updateUserProfile,
 }
