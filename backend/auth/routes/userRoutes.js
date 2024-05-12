@@ -15,11 +15,11 @@ import {
 
 const router = express.Router()
 
-router.route('/').post(registerUser).get(protect, verifyRefreshToken, admin, getUsers)
+router.route('/').post(registerUser).get(protect, admin, getUsers)
 router.post('/login', authUser)
-router.post('/logout', protect, verifyRefreshToken, logoutUser)
+router.post('/logout', protect, logoutUser)
 router.get('/tokens', protect, getAccessToken)
-router.route('/profile').get(protect, verifyRefreshToken, getUserProfile).put(protect, verifyRefreshToken, updateUserProfile)
-router.route('/:id').get(protect, verifyRefreshToken, admin, getUserById).put(protect, verifyRefreshToken, admin, updateUser).delete(protect, verifyRefreshToken, admin, deleteUser)
+router.route('/profile').get(protect, getUserProfile).put(protect, updateUserProfile)
+router.route('/:id').get(protect, admin, getUserById).put(protect, admin, updateUser).delete(protect, admin, deleteUser)
 
 export default router

@@ -13,13 +13,13 @@ const protect = asyncHandler(async (req, res, next) => {
       req.user = await User.findById(decoded.id).select('-password')
       req.token = token
 
-      redis_client.get(`BL_${decoded.id}`, (err, data) => {
-        if (err) throw err
-        if (data === token) {
-          res.status(401)
-          throw new Error('Token failed: blacklisted token')
-        }
-      })
+      // redis_client.get(`BL_${decoded.id}`, (err, data) => {
+      //   if (err) throw err
+      //   if (data === token) {
+      //     res.status(401)
+      //     throw new Error('Token failed: blacklisted token')
+      //   }
+      // })
       next()
     } catch (error) {
       console.error(error)
