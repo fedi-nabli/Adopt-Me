@@ -40,3 +40,4 @@ pnpm-lock.yaml*
 /models/animal_classification/pets
 /models/animal_classification/pets.*
 *.zip
+/models/animal_classification/pet_or_no_pet.ipynb
