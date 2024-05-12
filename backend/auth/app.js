@@ -5,7 +5,7 @@ import colors from 'colors'
 
 import { notFound, errorHandler } from './middleware/errorMiddleware.js'
 
-import connectDB from './config/mongob.js'
+import connectDB from './config/mongodb.js'
 import { connectRedis } from './config/redisdb.js'
 
 import userRoutes from './routes/userRoutes.js'
