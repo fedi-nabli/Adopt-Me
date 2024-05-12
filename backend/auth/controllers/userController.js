@@ -167,6 +167,79 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   }
 })
 
+const getUsers = asyncHandler(async (req, res) => {
+  const pageSize = Number(req.query.pageSize) || 12
+  const page = Number(req.query.pageNumber) || 1
+
+  const keyword = req.query.keyword ? {
+    name: {
+      $regex: req.query.keyword,
+      $options: 'i'
+    }
+  } : {}
+
+  const count = await User.countDocuments({...keyword})
+  const users = await User.find({...keyword}).limit(pageSize * (page - 1)).select('-password')
+
+  res.json({
+    count,
+    users,
+    pageSize,
+    page,
+    pages: Math.ceil(count / pageSize)
+  })
+})
+
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+
+  if (user) {
+    await User.deleteOne({_id: req.params.id})
+    res.status(200)
+    res.json({
+      message: 'User deleted successfully'
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select('-password')
+
+  if (user) {
+    res.status(200)
+    res.json(user)
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
+const updateUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id)
+
+  if (user) {
+    user.isAdmin = req.body.isAdmin
+    const updatedUser = await user.save()
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      image: updatedUser.image,
+      age: updatedUser.age,
+      phoneNumber: updatedUser.phoneNumber,
+      address: updatedUser.address,
+      isAdmin: updatedUser.isAdmin
+    })
+  } else {
+    res.status(404)
+    throw new Error('User not found')
+  }
+})
+
 export {
   authUser,
   registerUser,
@@ -174,4 +247,8 @@ export {
   getAccessToken,
   getUserProfile,
   updateUserProfile,
+  getUsers,
+  deleteUser,
+  getUserById,
+  updateUser
 }
