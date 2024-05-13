@@ -2,7 +2,7 @@ from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, Float, String, Text, DateTime, CheckConstraint
 
-from app import db
+from database.db import db
 
 BASE = declarative_base()
 

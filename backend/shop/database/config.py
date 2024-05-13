@@ -56,14 +56,10 @@ class PostgresApi():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    self.db = SQLAlchemy(app)
 
-  def get_db(self) -> SQLAlchemy:
-    return self.db
-  
-  def create_models(self) -> None:
+  def create_models(self, db: SQLAlchemy) -> None:
     from models.store_model import StoreItem
     from models.order_model import Order
 
     with self.app.app_context():
-      self.db.create_all()
+      db.create_all()

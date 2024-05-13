@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import JSONB, ARRAY, INTEGER
 from sqlalchemy import BindParameter, Column, Integer, Date, DateTime, String, Boolean, Sequence
 
-from app import db
+from database.db import db
 
 BASE = declarative_base()
 
