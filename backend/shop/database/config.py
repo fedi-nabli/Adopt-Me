@@ -47,7 +47,7 @@ class PostgresApi():
         # sql_query = f"\c {DB_NAME}"
         # cursor.execute(sql_query)
     
-    except(Exception , pgsql.Error) as error:
+    except(Exception, pgsql.Error) as error:
       print(f'Error while connecting to postgresql: {error}')
     finally:
       if connection:
