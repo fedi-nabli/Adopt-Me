@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 from database.db import db
 from database.config import PostgresApi
 from utils.error_handler import error_handler
-from middleware.auth_middleware import require_token
+from middleware.auth_middleware import require_token, admin
 from controllers.store_controller import get_products, get_product_by_id, create_product, delete_product, update_product
 
 app = Flask(__name__)
@@ -29,16 +29,18 @@ def get_product(product_id: int):
   if request.method == 'GET':
     return get_product_by_id(product_id=product_id)
 
-@app.route('/api/shop/items', methods=['POST'])
+@app.route('/api/shop/create', methods=['POST'])
 @error_handler
-def admin_store_items():
+@admin
+def admin_store_items(user_id, user_name, user_is_admin):
   if request.method == 'POST':
     product_data = request.json
     return create_product(product_data=product_data)
 
 @app.route('/api/shop/<int:product_id>', methods=['PUT', 'DELETE'])
 @error_handler
-def delete_store_item(product_id: int):
+@admin
+def delete_store_item(user_id, user_name, user_is_admin, product_id: int):
   if request.method == 'PUT':
     new_product_data = request.json
     return update_product(product_id=product_id, new_product_data=new_product_data)
