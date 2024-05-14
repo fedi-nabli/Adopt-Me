@@ -23,7 +23,7 @@ const authUser = asyncHandler(async (req, res) => {
       phoneNumber: user.phoneNumber,
       address: user.address,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id)
+      token: generateToken(user._id, user.name, user.isAdmin)
     })
   } else {
     res.status(401)
@@ -69,7 +69,7 @@ const registerUser = asyncHandler(async (req, res) => {
       phoneNumber: user.phoneNumber,
       address: user.address,
       isAdmin: user.isAdmin,
-      token: generateToken(user._id)
+      token: generateToken(user._id, user.name, user.isAdmin)
     })
   } else {
     res.status(400)
@@ -156,7 +156,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       phoneNumber: updatedUser.phoneNumber,
       address: updatedUser.address,
       isAdmin: updatedUser.isAdmin,
-      token: generateToken(updatedUser._id)
+      token: generateToken(updatedUser._id, updatedUser.name, updatedUser.isAdmin)
     })
   } else {
     res.status(404)

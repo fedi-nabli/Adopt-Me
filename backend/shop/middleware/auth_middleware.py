@@ -24,8 +24,13 @@ def require_token(f):
     try:
       decoded = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
       user_id = decoded['id']
+      user_name = decoded['name']
+
+      if not user_id or not user_name:
+        return make_response(jsonify({'message': 'Not authorized - token failed'}), 401)
+      
     except:
       return make_response(jsonify({'message': 'Not authorized - token failed'}), 401)
     
-    return f(user_id, *args, **kwargs)
+    return f(user_id, user_name, *args, **kwargs)
   return decorator

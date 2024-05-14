@@ -96,11 +96,9 @@ def create_product(product_data = None) -> Response:
   return make_response(jsonify({'message': 'product created successfully', 'product': product}), 201)
 
 def delete_product(product_id: int = None) -> Response:
-  print('here')
   product = StoreItem.query.get(product_id)
 
   if product:
-    print('here')
     db.session.delete(product)
     db.session.commit()
     
