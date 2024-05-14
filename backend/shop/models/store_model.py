@@ -21,4 +21,4 @@ class StoreItem(BASE, db.Model):
   )
 
   def __repr__(self) -> str:
-    return f'StoreItem({self.name}, {self.price}, ${self.item_type})'
+    return f'StoreItem({self.name}, {self.price}, {self.item_type})'

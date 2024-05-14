@@ -8,6 +8,6 @@ def error_handler(func):
     try:
       return func(*args, **kwargs)
     except Exception as e:
-      make_response(jsonify({'message': f'An error occured: ${e}'}), 500)
+      return make_response(jsonify({'message': f'An error occured: {e}'}), 500)
   
   return decorated_function
