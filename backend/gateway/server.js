@@ -22,7 +22,11 @@ const services = [
   },
   {
     route: '/orders',
-    target: 'http://127.0.0.1/api/orders'
+    target: 'http://127.0.0.1:5002/api/orders'
+  },
+  {
+    route: '/posts',
+    target: 'http://127.0.0.1:5003/api/posts'
   }
 ]
 
@@ -86,5 +90,5 @@ app.use((_req, res) => {
   })
 })
 
-const port = 5000
-app.listen(port, console.log(`Gateway running`))
+const PORT = 5000
+app.listen(PORT, console.log(`Gateway running on port ${PORT}`))
