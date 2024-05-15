@@ -51,11 +51,8 @@ class DatabaseApi():
 
     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB_NAME}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    self.db = SQLAlchemy(app)
+    self.db = SQLAlchemy()
 
-  def get_db(self) -> SQLAlchemy:
-    return self.db
-  
   def create_models(self):
     from models.post_model import Post
     from models.comments_model import Comment
