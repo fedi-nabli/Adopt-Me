@@ -53,7 +53,7 @@ def delete_post_by_id(user_id, user_name, post_id: int):
 def create_new_comment(user_id, user_name, post_id: int):
   if request.method == 'POST':
     comment_data = request.json
-    return create_comment(post_id=post_id, comment_data=comment_data)
+    return create_comment(post_id=post_id, username=user_name, comment_data=comment_data)
 
 @app.route('/api/posts/comments/<int:comment_id>', methods=['DELETE'], strict_slashes=False)
 @error_handler

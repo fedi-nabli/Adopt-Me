@@ -7,10 +7,10 @@ from database.db import db
 from models.post_model import Post
 from models.comments_model import Comment
 
-def get_post_comments(post_id: int = None) -> Response:
+def get_post_comments(post_id: int = None) -> list[dict]:
   db_comments: Comment = Comment.query.filter_by(post_id=post_id).all()
 
-  if comments:
+  if db_comments:
     comments = [{
       'id': comment.id,
       'post_id': comment.post_id,
@@ -19,9 +19,9 @@ def get_post_comments(post_id: int = None) -> Response:
       'date': comment.date
     } for comment in db_comments]
 
-    return make_response(jsonify({'comments': comments}), 200)
+    return comments
   else:
-    return make_response(jsonify({'error': 'Post not found'}), 404)
+    return None
 
 def get_posts(page_size: int = 12, page_number: int = 1) -> Response:
   posts_query = Post.query

@@ -1,6 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, String, Text, DateTime, Integer, Boolean
-from app import db
+
+from database.db import db
 
 class Comment(db.Model):
   id = Column(Integer, primary_key=True)

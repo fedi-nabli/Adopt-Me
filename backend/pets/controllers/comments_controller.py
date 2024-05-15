@@ -6,13 +6,11 @@ from models.comments_model import Comment
 
 from database.db import db
 
-def create_comment(username: str = None, comment_data = None) -> Response:
+def create_comment(post_id: int = None, username: str = None, comment_data = None) -> Response:
   if not comment_data:
     return make_response(jsonify({'message': 'No comment data provided'}), 400)
   
   comment = comment_data.get('comment')
-  post_id = comment_data.get('post_id')
-  
 
   created_comment = Comment(
     username=username,

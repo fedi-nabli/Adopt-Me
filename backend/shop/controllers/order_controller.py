@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy.orm import selectinload
 from flask import jsonify, make_response, Response
 from flask_sqlalchemy.pagination import Pagination
@@ -107,3 +109,110 @@ def create_order(user_id: str = None, order_data = None) -> Response:
   }
 
   return make_response(jsonify({'message': 'order created successfully', 'order': order}), 201)
+
+def get_orders(page_size: int = 20, page_number: int = 1, user_filter: str = None) -> Response:
+  orders_query = Order.query
+
+  if user_filter:
+    orders_query = orders_query.filter(Order.user == user_filter)
+
+  db_orders: Pagination = orders_query.paginate(page=page_number, per_page=page_size)
+  count = db_orders.total
+  page = db_orders.page
+  pages = db_orders.pages
+  pageSize = db_orders.per_page
+
+  sotred_orders: list[Order] = db_orders.items
+  orders = [{
+    'id': order.id,
+    'user': order.user,
+    'order_items': [get_order_item_by_id(order_item) for order_item in order.order_items_ids],
+    'shipping_address': order.shipping_address,
+    'paid': order.paid,
+    'delivered': order.delivered,
+    'shipping_date': order.shipping_date if order.shipping_date else 'Not deliverd',
+    'created_at': order.creation_date,
+    'updated_at': order.update_date
+  } for order in sotred_orders]
+
+  result = {
+    'count': count,
+    'orders': orders,
+    'page': page,
+    'pageSize': pageSize,
+    'pages': pages
+  }
+
+  return make_response(jsonify(result), 200)
+
+def delete_order(order_id: int = None) -> Response:
+  order: Order = Order.query.get(order_id)
+  
+  if order:
+    order_items: list[int] = order.order_items_ids
+    print(order_items)
+    for order_item_id in order_items:
+      order_item: OrderItem = OrderItem.query.get(order_item_id)
+      if order_item:
+        db.session.delete(order_item)
+    
+    db.session.delete(order)
+    db.session.commit()
+
+    return make_response(jsonify({'message': 'Order deleted successfully'}))
+
+  else:
+    return make_response(jsonify({'error': 'Order not found'}), 404)
+
+def update_order_to_paid(order_id: int = None) -> Response:
+  order: Order = Order.query.get(order_id)
+
+  if order:
+    order.paid = True
+    order.update_date = datetime.now()
+
+    db.session.commit()
+
+    updated_order = {
+      'id': order.id,
+      'user': order.user,
+      'order_items': [get_order_item_by_id(order_item) for order_item in order.order_items_ids],
+      'shipping_address': order.shipping_address,
+      'paid': order.paid,
+      'delivered': order.delivered,
+      'shipping_date': order.shipping_date if order.shipping_date else 'Not deliverd',
+      'created_at': order.creation_date,
+      'updated_at': order.update_date
+    }
+
+    return make_response(jsonify({'message': 'Order updated successfully', 'order': updated_order}), 200)
+
+  else:
+    return make_response(jsonify({'message': 'Order not found'}))
+  
+def update_order_to_delivered(order_id: int = None) -> Response:
+  order: Order = Order.query.get(order_id)
+
+  if order:
+    order.delivered = True
+    order.shipping_date = datetime.now().date()
+    order.update_date = datetime.now()
+
+    db.session.commit()
+
+    updated_order = {
+      'id': order.id,
+      'user': order.user,
+      'order_items': [get_order_item_by_id(order_item) for order_item in order.order_items_ids],
+      'shipping_address': order.shipping_address,
+      'paid': order.paid,
+      'delivered': order.delivered,
+      'shipping_date': order.shipping_date if order.shipping_date else 'Not deliverd',
+      'created_at': order.creation_date,
+      'updated_at': order.update_date
+    }
+
+    return make_response(jsonify({'message': 'Order updated successfully', 'order': updated_order}), 200)
+
+  else:
+    return make_response(jsonify({'message': 'Order not found'}))

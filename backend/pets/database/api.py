@@ -28,7 +28,7 @@ class DatabaseApi():
     
     cursor = connection.cursor()
 
-    cursor.execute("SHOW DATABASE")
+    cursor.execute("SHOW DATABASES")
     found = False
     for db in cursor:
       pattern = "[(,')]"
@@ -53,10 +53,9 @@ class DatabaseApi():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     self.db = SQLAlchemy()
 
-  def create_models(self):
+  def create_models(self, db: SQLAlchemy):
     from models.post_model import Post
     from models.comments_model import Comment
     
     with self.app.app_context():
-      self.db.create_all()
-     
+      db.create_all()
