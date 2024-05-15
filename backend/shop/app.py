@@ -5,6 +5,7 @@ from database.config import PostgresApi
 from utils.error_handler import error_handler
 from middleware.auth_middleware import require_token, admin
 from controllers.store_controller import get_products, get_product_by_id, create_product, delete_product, update_product
+from controllers.order_controller import get_my_orders
 
 app = Flask(__name__)
 app.config['secret_key'] = '8a6030d9c5576b19e503878e5925bee4'
@@ -47,6 +48,13 @@ def delete_store_item(user_id, user_name, user_is_admin, product_id: int):
 
   if request.method == 'DELETE':
     return delete_product(product_id=product_id)
+
+@app.route('/api/orders/my_orders', methods=['GET'])
+@error_handler
+@require_token
+def get_user_orders(user_id, user_name):
+  if request.method == 'GET':
+    return get_my_orders(user_id=user_id)
 
 if __name__ == '__main__':
   app.run(debug=True)

@@ -59,7 +59,7 @@ class PostgresApi():
 
   def create_models(self, db: SQLAlchemy) -> None:
     from models.store_model import StoreItem
-    from models.order_model import Order
+    from models.order_model import Order, OrderItem
 
     with self.app.app_context():
       db.create_all()

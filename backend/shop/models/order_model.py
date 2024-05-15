@@ -11,21 +11,26 @@ from database.db import db
 
 BASE = declarative_base()
 
-class ProductsColumn(ARRAY):
+class OrderItemColumn(ARRAY):
   def bind_expression(self, bindvalue: BindParameter[Sequence[Any]]) -> ColumnElement[Sequence[Any]] | None:
     return self.type_engine_expression(bindvalue)
+
+class OrderItem(db.Model):
+  id = Column(Integer, primary_key=True)
+  product_id = Column(Integer, nullable=False)
+  quantity = Column(Integer, nullable=False, default=1)
 
 class Order(BASE, db.Model):
   id = Column(Integer, primary_key=True)
   user = Column(String(150), nullable=False)
-  products_ids = Column(ProductsColumn(INTEGER), nullable=False)
+  order_items_ids = Column(OrderItemColumn(INTEGER), nullable=False)
   shipping_address = Column(mutable_json_type(dbtype=JSONB, nested=True), nullable=False)
   order_date = Column(Date, nullable=False, default=date.today)
   shipping_date = Column(Date, nullable=False)
   paid = Column(Boolean, nullable=False, default=False)
+  delivered = Column(Boolean, nullable=False, default=False)
   creation_date = Column(DateTime, nullable=False, default=datetime.now)
   update_date = Column(DateTime, nullable=False, default=datetime.now)
-  products = relationship('StoreItem', foreign_keys='[StoreItem.id]')
 
   def __repr__(self) -> str:
     return f'Order({self.user}, {self.order_date}, {self.shipping_date}, {self.paid})'
