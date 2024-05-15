@@ -26,7 +26,7 @@ class Order(BASE, db.Model):
   order_items_ids = Column(OrderItemColumn(INTEGER), nullable=False)
   shipping_address = Column(mutable_json_type(dbtype=JSONB, nested=True), nullable=False)
   order_date = Column(Date, nullable=False, default=date.today)
-  shipping_date = Column(Date, nullable=False)
+  shipping_date = Column(Date)
   paid = Column(Boolean, nullable=False, default=False)
   delivered = Column(Boolean, nullable=False, default=False)
   creation_date = Column(DateTime, nullable=False, default=datetime.now)

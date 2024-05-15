@@ -15,17 +15,14 @@ def get_product_by_id(product_id: int = None) -> dict:
       'name': stored_product.name,
       'category': stored_product.item_type,
       'price': stored_product.price,
-      'image': stored_product.image,
-      'description': stored_product.description,
-      'created_at': stored_product.creation_date,
-      'updated_at': stored_product.update_date
+      'image': stored_product.image
     }
     return product
   else:
     return None
 
 def get_order_item_by_id(item_id: int = None) -> dict:
-  stored_item: OrderItem = Order.query.get(item_id)
+  stored_item: OrderItem = OrderItem.query.get(item_id)
 
   if stored_item:
     order_item = {
@@ -56,6 +53,7 @@ def get_my_orders(page_size: int = 12, page_number: int = 1, user_id: str = None
     'shipping_address': order.shipping_address,
     'paid': order.paid,
     'delivered': order.delivered,
+    'shipping_date': order.shipping_date if order.shipping_date else 'Not deliverd',
     'created_at': order.creation_date,
     'updated_at': order.update_date
   } for order in stored_orders]
@@ -69,3 +67,43 @@ def get_my_orders(page_size: int = 12, page_number: int = 1, user_id: str = None
   }
 
   return make_response(jsonify(result), 200)
+
+def create_order_item(product_id: int = None, quantity: int = None) -> int:
+  if quantity <= 0:
+    return None
+  
+  created_order_item = OrderItem(
+    product_id=product_id,
+    quantity=quantity
+  )
+
+  db.session.add(created_order_item)
+  db.session.commit()
+
+  return created_order_item.id
+
+def create_order(user_id: str = None, order_data = None) -> Response:
+  order_items_ids = [create_order_item(item['product_id'], item['quantity']) for item in order_data.get('order_items')]
+  shipping_address = order_data.get('shipping_address')
+
+  created_order = Order(
+    user=user_id,
+    order_items_ids=order_items_ids,
+    shipping_address=shipping_address
+  )
+  db.session.add(created_order)
+  db.session.commit()
+
+  order = {
+    'id': created_order.id,
+    'user': created_order.user,
+    'order_items': [get_order_item_by_id(order_item) for order_item in created_order.order_items_ids],
+    'shipping_address': created_order.shipping_address,
+    'paid': created_order.paid,
+    'delivered': created_order.delivered,
+    'shipping_date': created_order.shipping_date if created_order.shipping_date else 'Not deliverd',
+    'created_at': created_order.creation_date,
+    'updated_at': created_order.update_date
+  }
+
+  return make_response(jsonify({'message': 'order created successfully', 'order': order}), 201)

@@ -6,7 +6,7 @@ from database.config import PostgresApi
 from utils.error_handler import error_handler
 from middleware.auth_middleware import require_token, admin
 from controllers.store_controller import get_products, get_product_by_id, create_product, delete_product, update_product
-from controllers.order_controller import get_my_orders
+from controllers.order_controller import get_my_orders, create_order
 
 app = Flask(__name__)
 CORS(app)
@@ -57,6 +57,14 @@ def delete_store_item(user_id, user_name, user_is_admin, product_id: int):
 def get_user_orders(user_id, user_name):
   if request.method == 'GET':
     return get_my_orders(user_id=user_id)
+
+@app.route('/api/orders', methods=['POST'])
+@error_handler
+@require_token
+def create_new_order(user_id, user_name):
+  if request.method == 'POST':
+    order_data = request.json
+    return create_order(user_id=user_id, order_data=order_data)
 
 if __name__ == '__main__':
   app.run(debug=True, port=5002)
