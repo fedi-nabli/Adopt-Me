@@ -7,9 +7,9 @@ class Post(db.Model):
   id = Column(Integer, primary_key=True)
   name = Column(String(40), nullable=True)
   image = Column(Text, nullable=True)
-  decription = Column(Text, nullable=False)
+  description = Column(Text, nullable=False)
   date = Column(DateTime, nullable=False, default=datetime.now)
-  comments = Column(Text, nullable=True)
+  update_date = Column(DateTime, nullable=False, default=datetime.now)
   likes = Column(Integer, nullable=True)
   adopted = Column(Boolean, nullable=False, default=False)
 

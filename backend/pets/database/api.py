@@ -58,6 +58,7 @@ class DatabaseApi():
   
   def create_models(self):
     from models.post_model import Post
+    from models.comments_model import Comment
     
     with self.app.app_context():
       self.db.create_all()
