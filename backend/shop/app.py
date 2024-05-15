@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from database.db import db
 from database.config import PostgresApi
@@ -8,13 +9,14 @@ from controllers.store_controller import get_products, get_product_by_id, create
 from controllers.order_controller import get_my_orders
 
 app = Flask(__name__)
+CORS(app)
 app.config['secret_key'] = '8a6030d9c5576b19e503878e5925bee4'
 
 db_api = PostgresApi(app=app)
 db.init_app(app)
 db_api.create_models(db)
 
-@app.route('/api/shop', methods=['GET'])
+@app.route('/api/shop', methods=['GET'], strict_slashes=False)
 @error_handler
 def shop_api():
   page = request.args.get('pageNumber', default=1, type=int)
@@ -24,13 +26,13 @@ def shop_api():
 
   return get_products(page_number=page, page_size=page_size, name_filter=name_filter, category_filter=ctaegory_filter)
 
-@app.route('/api/shop/<int:product_id>', methods=['GET'])
+@app.route('/api/shop/<int:product_id>', methods=['GET'], strict_slashes=False)
 @error_handler
 def get_product(product_id: int):
   if request.method == 'GET':
     return get_product_by_id(product_id=product_id)
 
-@app.route('/api/shop/create', methods=['POST'])
+@app.route('/api/shop/create', methods=['POST'], strict_slashes=False)
 @error_handler
 @admin
 def admin_store_items(user_id, user_name, user_is_admin):
@@ -38,7 +40,7 @@ def admin_store_items(user_id, user_name, user_is_admin):
     product_data = request.json
     return create_product(product_data=product_data)
 
-@app.route('/api/shop/<int:product_id>', methods=['PUT', 'DELETE'])
+@app.route('/api/shop/<int:product_id>', methods=['PUT', 'DELETE'], strict_slashes=False)
 @error_handler
 @admin
 def delete_store_item(user_id, user_name, user_is_admin, product_id: int):
@@ -49,7 +51,7 @@ def delete_store_item(user_id, user_name, user_is_admin, product_id: int):
   if request.method == 'DELETE':
     return delete_product(product_id=product_id)
 
-@app.route('/api/orders/my_orders', methods=['GET'])
+@app.route('/api/orders/my_orders', methods=['GET'], strict_slashes=False)
 @error_handler
 @require_token
 def get_user_orders(user_id, user_name):
@@ -57,4 +59,4 @@ def get_user_orders(user_id, user_name):
     return get_my_orders(user_id=user_id)
 
 if __name__ == '__main__':
-  app.run(debug=True)
+  app.run(debug=True, port=5002)
