@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import child_process from 'child_process'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 const app = express()
@@ -14,7 +15,7 @@ app.disable('x-powered-by')
 const services = [
   {
     route: '/auth',
-    target: 'http://localhost:5001/api/users'
+    target: 'http://127.0.0.1:5001/api/users'
   },
   {
     route: '/shop',
@@ -29,6 +30,43 @@ const services = [
     target: 'http://127.0.0.1:5003/api/posts'
   }
 ]
+
+const commands = [
+  {
+    name: 'Auth-API',
+    command: 'cd ../auth && node app.js'
+  },
+  {
+    name: 'Shop-API',
+    command: 'cd .. && call .venv/Scripts/activate && cd ./shop && flask run --port=5002'
+  },
+  {
+    name: 'Pets-API',
+    command: 'cd .. && call .venv/Scripts/activate && cd ./pets && flask run --port=5003'
+  }
+]
+
+function runCommand(command, name, callback) {
+  child_process.exec(command, function (_error, _stdout, stderr) {
+    if (stderr) {
+      callback(stderr, null)
+    } else {
+      callback(null, `Successfully executed ${name} ...`)
+    }
+  })
+}
+
+function main() {
+  commands.forEach(element => {
+    runCommand(element.command, element.name, (err, res) => {
+      if (err) {
+        console.error(err)
+      } else {
+        console.log(res)
+      }
+    })
+  })
+}
 
 const rateLimit = 100
 const interval = 60 * 1000
@@ -92,3 +130,5 @@ app.use((_req, res) => {
 
 const PORT = 5000
 app.listen(PORT, console.log(`Gateway running on port ${PORT}`))
+
+main()
