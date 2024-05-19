@@ -17,10 +17,10 @@ import {
   PRODUCT_UPDATE_FAIL
 } from '../constants/productConstants'
 
-export const listProducts = (keyword = '', pageNumber = '', name = '', category = '') => async (dispatch) => {
+export const listProducts = (pageSize = '', pageNumber = '', name = '', category = '') => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST })
-    const {data} = await axios.get(`/shop?keyword=${keyword}&pageNumber=${pageNumber}&name=${name}&category=${category}`)
+    const {data} = await axios.get(`/shop?pageSize=${pageSize}&pageNumber=${pageNumber}&name=${name}&category=${category}`)
     dispatch({
       type: PRODUCT_LIST_SUCCESS,
       payload: data
@@ -74,7 +74,7 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
   }
 }
 
-export const createProduct = () => async (dispatch, getState) => {
+export const createProduct = (product) => async (dispatch, getState) => {
   try {
     dispatch({
       type: PRODUCT_CREATE_REQUEST
@@ -87,7 +87,7 @@ export const createProduct = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     }
-    const {data} = await axios.post(`/shop`, {}, config)
+    const {data} = await axios.post(`/shop`, {product}, config)
     dispatch({
       type: PRODUCT_CREATE_SUCCESS,
       payload: data
