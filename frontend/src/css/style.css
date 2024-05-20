@@ -348,7 +348,6 @@ a {
 /* search bar style  */
 .search-bar {
   border: 1px solid #EAEAEA;
-  
 }
 
 .search-bar ::placeholder {
@@ -358,7 +357,7 @@ a {
 .form-control:focus {
   color: var(--bs-body-color);
   background-color: var(--bs-body-bg);
-  border-color: #000000;
+  border-color: #86b7fe;
   outline: 0;
   box-shadow: none;
 }
@@ -674,15 +673,4 @@ Single Product section style start
 .nav-pills .show>.nav-link {
   color: var(--light-color);
   background-color: var(--accent-color);
-}
-
-
-.small-logo {
-  width: 130px; /* Adjust the width as needed */
-  height: auto; /* This maintains the aspect ratio */
-}
-
-.small-logo-footer{
-  width: 200px; /* Adjust the width as needed */
-  height: auto;
 }
