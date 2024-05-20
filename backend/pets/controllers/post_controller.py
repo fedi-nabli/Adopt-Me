@@ -1,4 +1,7 @@
 from datetime import datetime
+import tensorflow as tf
+from PIL import Image
+import numpy as np
 
 from flask import jsonify, make_response, Response
 from flask_sqlalchemy.pagination import Pagination
@@ -6,6 +9,8 @@ from flask_sqlalchemy.pagination import Pagination
 from database.db import db
 from models.post_model import Post
 from models.comments_model import Comment
+
+model = tf.keras.models.load_model('./my_checkpoint.weights.h5')
 
 def get_post_comments(post_id: int = None) -> list[dict]:
   db_comments: Comment = Comment.query.filter_by(post_id=post_id).all()
@@ -76,6 +81,21 @@ def get_post_by_id(post_id: int = None) -> Response:
 def create_post(post_data = None) -> Response:
   if not post_data:
     return make_response(jsonify({'message': 'No post data provided'}), 400)
+  
+  img = Image.open(io.BytesIO(file.read()))
+  # Preprocess the image to match the model's expected input
+  img = img.resize((224, 224))  # Resize as needed
+  img = np.array(img) / 255.0  # Normalize pixel values
+  img = np.expand_dims(img, axis=0)  # Add batch dimension
+
+  # Make prediction
+  predictions = model.predict(img)
+
+  # Format the prediction output as needed
+  output = predictions.tolist()
+
+  if output == 'not-pet':
+    return make_response(jsonify({'message': 'Not a pet'}), 400)
   
   name = post_data.get('name')
   image = post_data.get('image')
